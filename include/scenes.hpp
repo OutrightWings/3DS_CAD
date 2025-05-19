@@ -7,9 +7,9 @@ class Scene {
         virtual void init();
         virtual bool userInput();
         virtual void tick();
-        virtual void renderTop3D();
+        virtual void renderTop3D(float iod);
         virtual void renderBottom3D();
-        virtual void renderTop2D();
+        virtual void renderTop2D(float iod);
         virtual void renderBottom2D();
 };
 class SceneEditor :public Scene {
@@ -17,9 +17,9 @@ class SceneEditor :public Scene {
         void init();
         bool userInput();
         void tick();
-        void renderTop3D();
+        void renderTop3D(float iod);
         void renderBottom3D();
-        void renderTop2D();
+        void renderTop2D(float iod);
         void renderBottom2D();
     private:
         C2D_Sprite viewSprite;

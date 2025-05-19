@@ -4,20 +4,21 @@ void initLib(){
 	//Base library
 	romfsInit();
 	gfxInitDefault();
+	gfxSet3D(true);
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
-	C2D_Prepare();
 
 	//Screens
 	createScreens();
 
 	//Sprites
 	loadSpriteSheets();
+	
+	initShader();
 }
 void deinitLib(){
 	freeSpriteSheets();
-	
-	C2D_Fini();
+	deinitShader();
 	C3D_Fini();
 	gfxExit();
 	romfsExit();

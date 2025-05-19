@@ -11,3 +11,4 @@
 
 #define SCREEN_WIDTH  400
 #define SCREEN_HEIGHT 240
+#define MAX_VERTEX 100
