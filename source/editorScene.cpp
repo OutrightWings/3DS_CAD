@@ -1,10 +1,17 @@
 #include "scenes.hpp"
 #include "spriteSheet.hpp"
 #include "graphics.hpp"
+#include "object.hpp"
 void SceneEditor::init(){
     C2D_SpriteFromSheet(&viewSprite, getSpriteSheet(), 0);
     C2D_SpriteSetCenter(&viewSprite, 0, 0);
     C2D_SpriteSetPos(&viewSprite, 0, 0);
+
+    C2D_SpriteFromSheet(&modelSprite, getModelSheet(), 0);
+    
+    generateTexturedCube(vertex_list,0,1,0,1);
+    updateVBO();
+
 }
 bool SceneEditor::userInput(){
     hidScanInput();
@@ -27,16 +34,16 @@ void  SceneEditor::tick(){
 
 }
 void SceneEditor::renderTop3D(float iod){
-    drawVBO(iod);
+    drawVBO(iod,modelSprite.image.tex);
 }
 void  SceneEditor::renderTop2D(float iod){
-    C2D_DrawCircleSolid(0,0,0,10,C2D_Color32f(0.0f, 0.0f, 1.0f, 1.0f));
-    C2D_DrawSprite(&viewSprite);
+    //C2D_DrawCircleSolid(0,0,0,10,C2D_Color32f(0.0f, 0.0f, 1.0f, 1.0f));
+    C2D_DrawSprite(&modelSprite);
 }
 void SceneEditor::renderBottom3D(){
 
 }
 void  SceneEditor::renderBottom2D(){
-    C2D_DrawCircleSolid(0,0,0,10,C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
+    //C2D_DrawCircleSolid(0,0,0,10,C2D_Color32f(1.0f, 0.0f, 0.0f, 1.0f));
     C2D_DrawSprite(&viewSprite);
 }

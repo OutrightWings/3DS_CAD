@@ -6,4 +6,5 @@
 void loadSpriteSheets();
 void freeSpriteSheets();
 C2D_SpriteSheet getSpriteSheet();
+C2D_SpriteSheet getModelSheet();
 void initSprites();

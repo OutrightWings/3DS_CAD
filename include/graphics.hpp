@@ -11,9 +11,10 @@
 extern float angleX;
 extern float angleY;
 
-void drawVBO(float iod);
-void sceneBind();
+void drawVBO(float iod,C3D_Tex *tex);
+void sceneBind(C3D_Tex *tex);
 void initShader();
 void deinitShader();
 void renderPipeline(Scene*);
 void createScreens();
+void updateVBO();

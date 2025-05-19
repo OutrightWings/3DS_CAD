@@ -23,4 +23,5 @@ class SceneEditor :public Scene {
         void renderBottom2D();
     private:
         C2D_Sprite viewSprite;
+        C2D_Sprite modelSprite;
 };
