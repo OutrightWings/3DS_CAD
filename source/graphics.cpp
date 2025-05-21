@@ -1,5 +1,8 @@
 #include "graphics.hpp"
 
+static Vertex* list;
+static int list_length;
+
 C3D_RenderTarget* topLeft, *topRight, *bottom;
 
 //Shader info
@@ -52,10 +55,12 @@ void drawVBO(float iod,C3D_Tex *tex){
 
 
 	// Draw the VBO
-	C3D_DrawArrays(GPU_TRIANGLES, 0, vertex_list_count);
+	C3D_DrawArrays(GPU_TRIANGLES, 0, list_length);
 }
-void updateVBO(){
-	memcpy(vbo_data,vertex_list,vertex_list_count*sizeof(vertex));
+void updateVBO(Vertex* _list, int count){
+	list = _list;
+	list_length = count;
+	memcpy(vbo_data,list,count*sizeof(Vertex));
 }
 void initShader(){
 	// Load the vertex shader, create a shader program and bind it
@@ -77,13 +82,16 @@ void initShader(){
 	AttrInfo_AddLoader(&vbo_attrInfo, 1, GPU_FLOAT, 2); // v1=uv
 	AttrInfo_AddLoader(&vbo_attrInfo, 2, GPU_FLOAT, 3); // v2=normal
 
+	//Init with a default
+	list = vertex_list;
+	list_length = vertex_list_count;
 	// Create the VBO (vertex buffer object)
-	vbo_data = linearAlloc(sizeof(vertex_list));
-	memcpy(vbo_data, vertex_list, sizeof(vertex_list));
+	vbo_data = linearAlloc(sizeof(*list));
+	memcpy(vbo_data, list, sizeof(list_length));
 
 	// Configure buffers
 	BufInfo_Init(&vbo_bufInfo);
-	BufInfo_Add(&vbo_bufInfo, vbo_data, sizeof(vertex), 3, 0x210);
+	BufInfo_Add(&vbo_bufInfo, vbo_data, sizeof(Vertex), 3, 0x210);
 
 }
 void deinitShader(){

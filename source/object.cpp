@@ -1,12 +1,12 @@
 #include "object.hpp"
 
-vertex vertex_list[36];
+Vertex vertex_list[36];
 
-void generateTexturedCube(vertex* out, float u0, float u1, float v0, float v1) {
+void generateTexturedCube(Vertex* out, float u0, float u1, float v0, float v1) {
     const float p = 0.5f;
 
     const struct {
-        float normal[3];
+        float nm[3];
         float corners[6][3]; // 6 vertices (2 triangles)
         float uvs[6][2];
     } faces[6] = {
@@ -64,11 +64,11 @@ void generateTexturedCube(vertex* out, float u0, float u1, float v0, float v1) {
         for (int i = 0; i < 6; ++i) {
             int idx = f * 6 + i;
             for (int j = 0; j < 3; ++j)
-                out[idx].position[j] = faces[f].corners[i][j];
+                out[idx].pos[j] = faces[f].corners[i][j];
             for (int j = 0; j < 2; ++j)
-                out[idx].texcoord[j] = faces[f].uvs[i][j];
+                out[idx].uv[j] = faces[f].uvs[i][j];
             for (int j = 0; j < 3; ++j)
-                out[idx].normal[j] = faces[f].normal[j];
+                out[idx].nm[j] = faces[f].nm[j];
         }
     }
 }

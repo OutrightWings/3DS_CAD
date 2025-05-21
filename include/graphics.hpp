@@ -6,7 +6,7 @@
 #include "constants.hpp"
 #include "scenes.hpp"
 #include "object.hpp"
-
+#include "modelObject.hpp"
 
 extern float angleX;
 extern float angleY;
@@ -17,4 +17,4 @@ void initShader();
 void deinitShader();
 void renderPipeline(Scene*);
 void createScreens();
-void updateVBO();
+void updateVBO(Vertex* list, int count);
