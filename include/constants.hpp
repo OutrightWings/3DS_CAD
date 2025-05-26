@@ -12,3 +12,19 @@
 #define SCREEN_WIDTH  400
 #define SCREEN_HEIGHT 240
 #define MAX_VERTEX 100
+
+
+#define TOP_BAR_BUTTON_WIDTH 27
+#define TOP_BAR_BUTTON_HEIGHT 32
+#define TOP_BAR_LOAD_X 0
+#define TOP_BAR_SAVE_X 27
+#define TOP_BAR_REMOVE_X 173
+#define TOP_BAR_ADD_X 200
+#define TOP_BAR_TOP_X 239
+#define TOP_BAR_LEFT_X 266
+#define TOP_BAR_RIGHT_X 293
+
+#define PRO_C1_X 0
+#define PRO_C1_Y 32
+#define PRO_C2_X 320
+#define PRO_C2_Y 240

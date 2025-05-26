@@ -166,11 +166,7 @@ void Model::generateTris() {
     std::copy(tempTris.begin(), tempTris.end(), triArray);
 }
 
-void Model::updateVertex(Vertex* v, float x, float y, float z) {
-    v->pos[0] = x;
-    v->pos[1] = y;
-    v->pos[2] = z;
-
+void Model::updateVertex(Vertex* v) {
     for (size_t i = 0; i < triCount; i += 3) {
         Vertex* v0 = triSourcePointers[i];
         Vertex* v1 = triSourcePointers[i + 1];

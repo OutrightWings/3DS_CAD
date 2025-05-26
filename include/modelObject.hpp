@@ -47,5 +47,5 @@ class Model {
     void generateTris();
 
     // Updates a vertex's position and recalculates normals for affected tris
-    void updateVertex(Vertex* v, float x, float y, float z);
+    void updateVertex(Vertex* v);
 };

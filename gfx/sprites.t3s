@@ -1,6 +1,5 @@
 --atlas -f rgba8888 -z auto
-front.png
-none.png
-side.png
-top.png
-circle.png
+editor_bar.png
+view_selector.png
+vertex_unselected.png
+vertex_selected.png
