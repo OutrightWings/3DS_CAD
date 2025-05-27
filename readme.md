@@ -1,5 +1,4 @@
 # Todo:
-* Vertex Buttons prefer closer when more than 1 overlapping
 * Make Rotation perform intutively. Controls do not rotate in a logical way. use two axis system, or figure out equivlent
 * add vertex, delete vertex button
 * save data
@@ -8,7 +7,7 @@
 * sprite editor
 * polish software theming
 * help button
-
+* double tap view button to get other side. top -> bottom etc
 # Maybe:
 * Rotate View buttons cause smooth rotation transition, pick good values
 * export model

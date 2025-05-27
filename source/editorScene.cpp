@@ -55,6 +55,7 @@ void SceneEditor::handleTouch(){
     if (!(touch.px == 0 && touch.py == 0)) { // screen is touched
         if (!dragged) {
             if(touch.py <= TOP_BAR_BUTTON_HEIGHT){
+                //Check Buttons for click
                 if(loadButton.isClicked(touch.px,touch.py)){
                     //TODO
                 } 
@@ -89,20 +90,20 @@ void SceneEditor::handleTouch(){
                 // We are just starting to drag: find the vertex under the touch point
                 selectedVertButton = nullptr;
                 float bestDistSq = VERTEX_RADIUS * VERTEX_RADIUS;
-
+                float depth = -1;
                 for (VertexButton& v : vertexButtons) {
                     std::pair<float, float> pos = v.getPos();
                     float dx = pos.first - touch.px;
                     float dy = pos.second - touch.py;
                     float distSq = dx * dx + dy * dy;
 
-                    if (distSq <= bestDistSq) {
+                    if (distSq <= bestDistSq && v.depth >= depth) {
                         bestDistSq = distSq;
                         selectedVertButton = &v;
-                        selectedVertButton->isSelected = true;
-                        break;
+                        depth = v.depth;
                     }
                 }
+                selectedVertButton->isSelected = true;
             }
         }
         else if (selectedVertButton && dragged) { //Move vertex with stylus

@@ -54,7 +54,7 @@ class VertexButton : Button {
         C2D_SpriteSetPos(&unselected, x, y);
         C2D_SpriteSetPos(&selected, x, y);
 
-        float depth = depthValue(state,v);
+        depth = depthValue(state,v);
         C2D_SpriteSetDepth(&unselected, depth);
         C2D_SpriteSetDepth(&selected, depth);
     }
@@ -67,6 +67,7 @@ class VertexButton : Button {
         }
     }
     Vertex* v;
+    float depth;
     C2D_Sprite unselected, selected;
     bool isSelected;
 };
