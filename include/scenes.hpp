@@ -31,7 +31,6 @@ class SceneEditor :public Scene {
         C2D_Sprite topBarSprite, selectedViewSprite;
         C2D_Sprite modelSprite;
         Model *model;
-        ViewState state;
         void handleTouch();
         bool handleKeys();
 };

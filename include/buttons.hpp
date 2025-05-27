@@ -3,6 +3,7 @@
 #include "scenes.hpp"
 #include "spriteSheet.hpp"
 #include "3dMath.hpp"
+#include "graphics.hpp"
 
 class Button{
 	public: 
@@ -19,9 +20,8 @@ class Button{
 };
 class VertexButton : Button {
     public:
-    VertexButton(Vertex* _v, ViewState _s) : Button(0,0,6,6){
+    VertexButton(Vertex* _v) : Button(0,0,6,6){
         v = _v;
-        updateView(_s);
 
         C2D_SpriteFromSheet(&unselected, getSpriteSheet(), 2);
         C2D_SpriteSetCenter(&unselected, 0.5f, 0.5f);
@@ -30,18 +30,15 @@ class VertexButton : Button {
 
         updateSpritePos();
     }
-    void updateView(ViewState _s){
-        s = _s;
-    }
     void updatePos(float screenX, float screenY){
-        std::array<float, 3> result = screenToModelSpace(screenX,screenY,s,v);
+        std::array<float, 3> result = screenToModelSpace(screenX,screenY,state,v);
         for(int i = 0; i < 3; i++){
             v->pos[i] = result[i];
         }
         updateSpritePos();
     }
     std::pair<float, float> getPos(){
-        return modelToScreenSpace(s,v);
+        return modelToScreenSpace(state,v);
     }
     
     bool isClicked(int px, int py){
@@ -58,6 +55,7 @@ class VertexButton : Button {
         C2D_SpriteSetPos(&selected, x, y);
     }
     void drawButton(){
+        updateSpritePos();
         if(isSelected){
             C2D_DrawSprite(&selected);
         } else {
@@ -65,8 +63,13 @@ class VertexButton : Button {
         }
     }
     Vertex* v;
-    ViewState s;
     C2D_Sprite unselected, selected;
     bool isSelected;
 };
 extern Button loadButton;
+extern Button saveButton;
+extern Button deleteButton;
+extern Button newButton;
+extern Button topButton;
+extern Button leftButton;
+extern Button rightButton;

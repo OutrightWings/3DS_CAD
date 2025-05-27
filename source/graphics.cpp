@@ -25,7 +25,7 @@ static C3D_AttrInfo vbo_attrInfo;
 static C3D_BufInfo vbo_bufInfo;
 static void* vbo_data;
 float angleX = 45, angleY = 45;
-
+ViewState state = VIEW_TOP;
 
 void drawVBO(float iod,C3D_Tex *tex){
 	// Bind the program to render the VBO scene

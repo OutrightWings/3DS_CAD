@@ -23,18 +23,18 @@ void SceneEditor::init(){
 
     C2D_SpriteFromSheet(&selectedViewSprite, getSpriteSheet(), 1);
     C2D_SpriteSetCenter(&selectedViewSprite, 0, 0);
-    C2D_SpriteSetPos(&selectedViewSprite, TOP_BAR_TOP_X, 0);
+    C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
 
     C2D_SpriteFromSheet(&modelSprite, getModelSheet(), 0);
     
     model = new Model();
     updateVBO(model->triArray,model->triCount);
-    
+
     state = VIEW_TOP;
 
     //Create vertex buttons
-    for(int i = 0; i < model->vertices.size(); i++){
-        vertexButtons.push_back(VertexButton(&model->vertices[i],state));
+    for(size_t i = 0; i < model->vertices.size(); i++){
+        vertexButtons.push_back(VertexButton(&model->vertices[i]));
     }
 
     staticTextBuf = C2D_TextBufNew(128);
@@ -56,7 +56,34 @@ void SceneEditor::handleTouch(){
         if (!dragged) {
             if(touch.py <= TOP_BAR_BUTTON_HEIGHT){
                 if(loadButton.isClicked(touch.px,touch.py)){
-                    C2D_SpriteSetPos(&selectedViewSprite, 0, 0);
+                    //TODO
+                } 
+                else if(saveButton.isClicked(touch.px,touch.py)){
+                    //TODO
+                }
+                else if(deleteButton.isClicked(touch.px,touch.py)){
+                    //TODO
+                }
+                else if(newButton.isClicked(touch.px,touch.py)){
+                    //TODO
+                }
+                else if(topButton.isClicked(touch.px,touch.py)){
+                    C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
+                    state = VIEW_TOP;
+                    angleX = -1;
+                    angleY = -1;
+                }
+                else if(leftButton.isClicked(touch.px,touch.py)){
+                    C2D_SpriteSetPos(&selectedViewSprite, leftButton.x, leftButton.y);
+                    state = VIEW_LEFT;
+                    angleX = 0;
+                    angleY = -.75f;
+                }
+                else if(rightButton.isClicked(touch.px,touch.py)){
+                    C2D_SpriteSetPos(&selectedViewSprite, rightButton.x, rightButton.y);
+                    state = VIEW_RIGHT;
+                    angleX = -0.25f;
+                    angleY = 1;
                 }
             } else {
                 // We are just starting to drag: find the vertex under the touch point
@@ -73,6 +100,7 @@ void SceneEditor::handleTouch(){
                         bestDistSq = distSq;
                         selectedVertButton = &v;
                         selectedVertButton->isSelected = true;
+                        break;
                     }
                 }
             }
@@ -90,12 +118,13 @@ void SceneEditor::handleTouch(){
             model->generateTris();
             updateVBO(model->triArray, model->triCount);
             selectedVertButton->isSelected = false;
+            selectedVertButton = nullptr;
         }
     }
 
     //debug info
     staticTextBuf = C2D_TextBufNew(128);
-    C2D_TextParse(&txt, staticTextBuf, std::to_string(touch.px).c_str());
+    C2D_TextParse(&txt, staticTextBuf, (std::to_string(angleX) + " " + std::to_string(angleY)).c_str());
 	C2D_TextOptimize(&txt);
 }
 bool SceneEditor::handleKeys(){
@@ -144,7 +173,7 @@ void SceneEditor::renderBottom2D() {
     }
 
     // Draw vertex handles
-    for(int i = 0; i < vertexButtons.size(); i++){
+    for(size_t i = 0; i < vertexButtons.size(); i++){
         vertexButtons[i].drawButton();
     }
 
