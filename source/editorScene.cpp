@@ -124,7 +124,17 @@ void SceneEditor::handleTouch(){
 
     //debug info
     staticTextBuf = C2D_TextBufNew(128);
-    C2D_TextParse(&txt, staticTextBuf, (std::to_string(angleX) + " " + std::to_string(angleY)).c_str());
+    //C2D_TextParse(&txt, staticTextBuf, (std::to_string(angleX) + " " + std::to_string(angleY)).c_str());
+    float biggest = 0, smallest = 10;
+    for(Vertex& v : model->vertices){
+        if(biggest < v.pos[0]){
+            biggest = v.pos[0];
+        }
+        if(smallest > v.pos[0]){
+            smallest = v.pos[0];
+        }
+    }
+    C2D_TextParse(&txt, staticTextBuf, (std::to_string(biggest) + " " + std::to_string(smallest)).c_str());
 	C2D_TextOptimize(&txt);
 }
 bool SceneEditor::handleKeys(){
@@ -152,8 +162,7 @@ void SceneEditor::renderTop3D(float iod){
     drawVBO(iod,modelSprite.image.tex);
 }
 void SceneEditor::renderTop2D(float iod){
-    //C2D_DrawCircleSolid(0,0,0,10,C2D_Color32f(0.0f, 0.0f, 1.0f, 1.0f));
-    //C2D_DrawSprite(&modelSprite);
+    C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 0.5f, 0.5f);
 }
 void SceneEditor::renderBottom3D(){
 
@@ -166,9 +175,10 @@ void SceneEditor::renderBottom2D() {
             Vertex* v2 = face[(i + 1) % face.size()].v;
             std::pair<float, float> pair1 = modelToScreenSpace(state,v1);
             std::pair<float, float> pair2 = modelToScreenSpace(state,v2);
-
-            C2D_DrawLine(pair1.first, pair1.second, C2D_Color32(200, 200, 200, 255),
-                         pair2.first, pair2.second, C2D_Color32(200, 200, 200, 255), 1.5f, 0);
+            float d1 = depthValue(state, v1);
+            float d2 = depthValue(state, v2);
+            C2D_DrawLine(pair1.first, pair1.second, depthColor(d1),
+                         pair2.first, pair2.second, depthColor(d2), 1.5f, (d1 + d2) /2.0f);
         }
     }
 
@@ -177,7 +187,6 @@ void SceneEditor::renderBottom2D() {
         vertexButtons[i].drawButton();
     }
 
-    //C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 1.0f, 1.0f);
     C2D_DrawSprite(&topBarSprite);
     C2D_DrawSprite(&selectedViewSprite);
 }

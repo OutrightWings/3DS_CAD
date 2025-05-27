@@ -53,6 +53,10 @@ class VertexButton : Button {
         float y = pos.second;
         C2D_SpriteSetPos(&unselected, x, y);
         C2D_SpriteSetPos(&selected, x, y);
+
+        float depth = depthValue(state,v);
+        C2D_SpriteSetDepth(&unselected, depth);
+        C2D_SpriteSetDepth(&selected, depth);
     }
     void drawButton(){
         updateSpritePos();
