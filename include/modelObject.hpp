@@ -4,6 +4,10 @@
 #include <cmath>
 #include <algorithm>
 #include <cstdlib>
+
+#include "citro2d.h"
+#include "spriteSheet.hpp"
+
 typedef struct { float pos[3]; float uv[2]; float nm[3]; } Vertex;
 struct FaceVertex {
     Vertex* v;
@@ -49,3 +53,6 @@ class Model {
     // Updates a vertex's position and recalculates normals for affected tris
     void updateVertex(Vertex* v);
 };
+void initModel();
+extern Model* model;
+extern C2D_Sprite modelSprite;

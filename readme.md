@@ -1,5 +1,7 @@
 # Todo:
+* Use earclipping to generate tris instead of fan so concave shapes
 * Make Rotation perform intutively. Controls do not rotate in a logical way. use two axis system, or figure out equivlent
+* multi select verts
 * add vertex, delete vertex button
 * save data
 * home menu, shows last model on home menu? home menu -> editor always starts new file -> load

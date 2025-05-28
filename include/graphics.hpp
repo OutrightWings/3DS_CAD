@@ -5,7 +5,6 @@
 #include "vshader_shbin.h"
 #include "constants.hpp"
 #include "scenes.hpp"
-#include "object.hpp"
 #include "modelObject.hpp"
 #include "3dMath.hpp"
 

@@ -1,13 +1,10 @@
 #include "libraryInterface.hpp"
 #include "scenes.hpp"
 
-static Scene* current_scene;
-
 int main(int argc, char* argv[]) {
 	initLib();
 	
-	current_scene = new SceneEditor;
-	current_scene->init();
+	changeScene(new StartMenu());
 
 	while (aptMainLoop())
 	{

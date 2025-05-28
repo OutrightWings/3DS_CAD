@@ -14,6 +14,7 @@ void initLib(){
 	//Sprites
 	loadSpriteSheets();
 	
+	initModel();
 	initShader();
 }
 void deinitLib(){

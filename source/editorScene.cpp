@@ -25,11 +25,6 @@ void SceneEditor::init(){
     C2D_SpriteSetCenter(&selectedViewSprite, 0, 0);
     C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
 
-    C2D_SpriteFromSheet(&modelSprite, getModelSheet(), 0);
-    
-    model = new Model();
-    updateVBO(model->triArray,model->triCount);
-
     state = VIEW_TOP;
 
     //Create vertex buttons

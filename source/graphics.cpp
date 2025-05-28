@@ -82,12 +82,12 @@ void initShader(){
 	AttrInfo_AddLoader(&vbo_attrInfo, 1, GPU_FLOAT, 2); // v1=uv
 	AttrInfo_AddLoader(&vbo_attrInfo, 2, GPU_FLOAT, 3); // v2=normal
 
+	
+
 	//Init with a default
-	list = vertex_list;
-	list_length = vertex_list_count;
 	// Create the VBO (vertex buffer object)
-	vbo_data = linearAlloc(sizeof(*list));
-	memcpy(vbo_data, list, sizeof(list_length));
+	vbo_data = linearAlloc(sizeof(model->triCount));
+    updateVBO(model->triArray,model->triCount);
 
 	// Configure buffers
 	BufInfo_Init(&vbo_bufInfo);
