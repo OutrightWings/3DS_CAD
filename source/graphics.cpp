@@ -24,7 +24,7 @@ static C3D_Mtx material =
 static C3D_AttrInfo vbo_attrInfo;
 static C3D_BufInfo vbo_bufInfo;
 static void* vbo_data;
-float angleX = 45, angleY = 45;
+
 ViewState state = VIEW_TOP;
 
 void drawVBO(float iod,C3D_Tex *tex){
@@ -34,16 +34,19 @@ void drawVBO(float iod,C3D_Tex *tex){
 	// Compute the projection matrix
 	Mtx_PerspStereoTilt(&projection, C3D_AngleFromDegrees(40.0f), C3D_AspectRatioTop, 0.01f, 1000.0f, iod, 2.0f, false);
 
-	C3D_FVec objPos   = FVec4_New(0.0f, 0.0f, -3.0f, 1.0f);
-
 	// Calculate the modelView matrix
-	C3D_Mtx modelView;
-	Mtx_Identity(&modelView);
-	Mtx_Translate(&modelView, objPos.x, objPos.y, objPos.z, true);
-	Mtx_RotateY(&modelView, C3D_Angle(angleY), true);
-	Mtx_RotateX(&modelView, C3D_Angle(angleX), true);
-	//Mtx_Scale(&modelView, 2.0f, 2.0f, 2.0f);
+	// // Step 1: Compute the rotated camera position
+	C3D_FVec baseCamPos = FVec4_New(0.0f, 0.0f, 3.0f, 1.0f); // camera 3 units *behind* origin
+	C3D_FVec camPos = Mtx_MultiplyFVec4(&cameraRotation, baseCamPos);
 
+	// Step 2: Build look-at view matrix from camPos -> target
+	C3D_FVec target = FVec3_New(0.0f, 0.0f, 0.0f);
+	// Rotate the up vector (0, 1, 0) by the cameraRotation matrix
+	C3D_FVec defaultUp = FVec3_New(0.0f, 1.0f, 0.0f);
+	C3D_FVec up = Mtx_MultiplyFVec3(&cameraRotation, defaultUp);
+
+	C3D_Mtx modelView;
+	Mtx_LookAt(&modelView, camPos, target, up, false);
 
 	// Update the uniforms
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_projection, &projection);
@@ -88,6 +91,9 @@ void initShader(){
 	// Create the VBO (vertex buffer object)
 	vbo_data = linearAlloc(sizeof(model->triCount));
     updateVBO(model->triArray,model->triCount);
+
+	//rotation
+	Mtx_Identity(&cameraRotation);
 
 	// Configure buffers
 	BufInfo_Init(&vbo_bufInfo);

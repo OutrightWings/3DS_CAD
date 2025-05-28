@@ -65,21 +65,18 @@ void SceneEditor::handleTouch(){
                 }
                 else if(topButton.isClicked(touch.px,touch.py)){
                     C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
-                    state = VIEW_TOP;
-                    angleX = -1;
-                    angleY = -1;
+                    state = state == VIEW_TOP ? VIEW_OPP_TOP : VIEW_TOP;
+                    presetRotate(state);
                 }
                 else if(leftButton.isClicked(touch.px,touch.py)){
                     C2D_SpriteSetPos(&selectedViewSprite, leftButton.x, leftButton.y);
-                    state = VIEW_LEFT;
-                    angleX = 0;
-                    angleY = -.75f;
+                    state = state == VIEW_LEFT ? VIEW_OPP_LEFT : VIEW_LEFT;
+                    presetRotate(state);
                 }
                 else if(rightButton.isClicked(touch.px,touch.py)){
                     C2D_SpriteSetPos(&selectedViewSprite, rightButton.x, rightButton.y);
-                    state = VIEW_RIGHT;
-                    angleX = -0.25f;
-                    angleY = 1;
+                    state = state == VIEW_RIGHT ? VIEW_OPP_RIGHT : VIEW_RIGHT;
+                    presetRotate(state);
                 }
             } else {
                 // We are just starting to drag: find the vertex under the touch point
@@ -139,15 +136,9 @@ bool SceneEditor::handleKeys(){
     if (kDown & KEY_START)
         return true; // break in order to return to hbmenu
 
-    u32 kHeld = hidKeysHeld();
-    if ((kHeld & KEY_DRIGHT))
-        angleY += 1.0f/256;
-    if ((kHeld & KEY_DLEFT))
-        angleY -= 1.0f/256;
-    if ((kHeld & KEY_DUP))
-        angleX -= 1.0f/256;
-    if ((kHeld & KEY_DDOWN))
-        angleX += 1.0f/256;
+    u32 key = hidKeysHeld();
+    if ((key & KEY_DRIGHT) || (key & KEY_DLEFT) || (key & KEY_DUP) || (key & KEY_DDOWN))
+        rotate(key);
 
     return false;
 }

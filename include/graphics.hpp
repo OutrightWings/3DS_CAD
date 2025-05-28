@@ -8,8 +8,6 @@
 #include "modelObject.hpp"
 #include "3dMath.hpp"
 
-extern float angleX;
-extern float angleY;
 extern ViewState state;
 
 void drawVBO(float iod,C3D_Tex *tex);

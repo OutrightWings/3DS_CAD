@@ -1,5 +1,8 @@
 #include "3dMath.hpp"
 
+float yaw = 0, pitch = 0;
+C3D_Mtx cameraRotation;
+
 template<typename T>
 T clamp(T value, T min, T max) {
     return (value < min) ? min : (value > max) ? max : value;
@@ -28,25 +31,31 @@ std::array<float, 3> screenToModelSpace(float screenX, float screenY, ViewState 
         case VIEW_TOP:
             result[0] = modelA;     // X
             result[1] = -modelB;    // Y (flipped)
-
-            result[0] = clamp(result[0], -1.0f, 1.0f);
-            result[1] = clamp(result[1], -1.0f, 1.0f);
             break;
         case VIEW_LEFT:
             result[2] = modelA;     // Z
             result[1] = -modelB;    // Y
-
-            result[2] = clamp(result[2], -1.0f, 1.0f);
-            result[1] = clamp(result[1], -1.0f, 1.0f);
             break;
         case VIEW_RIGHT:
             result[0] = modelA;     // X
             result[2] = -modelB;    // Z
-
-            result[0] = clamp(result[0], -1.0f, 1.0f);
-            result[2] = clamp(result[2], -1.0f, 1.0f);
+            break;
+            case VIEW_OPP_TOP:
+            result[0] = -modelA;     // X
+            result[1] = -modelB;    // Y (flipped)
+            break;
+        case VIEW_OPP_LEFT:
+            result[2] = -modelA;     // Z
+            result[1] = -modelB;    // Y
+            break;
+        case VIEW_OPP_RIGHT:
+            result[0] = -modelA;     // X
+            result[2] = -modelB;    // Z
             break;
     }
+    result[0] = clamp(result[0], -1.0f, 1.0f);
+    result[1] = clamp(result[1], -1.0f, 1.0f);
+    result[2] = clamp(result[2], -1.0f, 1.0f);
     return result;
 }
 std::pair<float, float> modelToScreenSpace(ViewState s, Vertex* v){
@@ -64,6 +73,18 @@ std::pair<float, float> modelToScreenSpace(ViewState s, Vertex* v){
             break;
         case VIEW_RIGHT:
             modelX = v->pos[0];
+            modelY = -v->pos[2];
+            break;
+        case VIEW_OPP_TOP:
+            modelX = -v->pos[0];
+            modelY = -v->pos[1];
+            break;
+        case VIEW_OPP_LEFT:
+            modelX = -v->pos[2];
+            modelY = -v->pos[1];
+            break;
+        case VIEW_OPP_RIGHT:
+            modelX = -v->pos[0];
             modelY = -v->pos[2];
             break;
     }
@@ -102,6 +123,15 @@ float depthValue(ViewState s, Vertex* v){
         case VIEW_RIGHT:
             depth = -v->pos[1];
             break;
+        case VIEW_OPP_TOP:
+            depth = -v->pos[2];
+            break;
+        case VIEW_OPP_LEFT:
+            depth = v->pos[0];
+            break;
+        case VIEW_OPP_RIGHT:
+            depth = v->pos[1];
+            break;
     }
     return depth;
 }
@@ -117,4 +147,54 @@ u32 depthColor(float depth){
         out[i] = f + (n - f) * nm;
     }
     return C2D_Color32(out[0],out[1],out[2],out[3]);
+}
+void rotate(u32 kHeld){
+    const float sensitivity = C3D_AngleFromDegrees(1.0f); // 1 degree per frame
+
+    C3D_Mtx rotation;
+    Mtx_Identity(&rotation);
+
+    // Pitch (local X axis)
+    if (kHeld & KEY_DDOWN) {
+        Mtx_RotateX(&rotation, -sensitivity, true);
+        Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
+    }
+    if (kHeld & KEY_DUP) {
+        Mtx_RotateX(&rotation, sensitivity, true);
+        Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
+    }
+
+    // Yaw (local Y axis)
+    if (kHeld & KEY_DLEFT) {
+        Mtx_RotateY(&rotation, sensitivity, true);
+        Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
+    }
+    if (kHeld & KEY_DRIGHT) {
+        Mtx_RotateY(&rotation, -sensitivity, true);
+        Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
+    }
+}
+void presetRotate(ViewState view){
+    Mtx_Identity(&cameraRotation);
+    switch(view){
+        case VIEW_LEFT:
+            Mtx_RotateY(&cameraRotation, C3D_AngleFromDegrees(-90), false);
+            break;
+        case VIEW_RIGHT:
+            Mtx_RotateX(&cameraRotation, C3D_AngleFromDegrees(90), false);
+            break;
+        case VIEW_TOP:
+            
+            break;
+        case VIEW_OPP_TOP:
+            Mtx_RotateY(&cameraRotation, C3D_AngleFromDegrees(180), false);
+            break;
+        case VIEW_OPP_LEFT:
+            Mtx_RotateY(&cameraRotation, C3D_AngleFromDegrees(90), false);
+            break;
+        case VIEW_OPP_RIGHT:
+            Mtx_RotateX(&cameraRotation, C3D_AngleFromDegrees(-90), false);
+            Mtx_RotateY(&cameraRotation, C3D_AngleFromDegrees(180), false);
+            break;
+    }
 }
