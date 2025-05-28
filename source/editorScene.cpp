@@ -32,9 +32,9 @@ void SceneEditor::init(){
         vertexButtons.push_back(VertexButton(&model->vertices[i]));
     }
 
-    staticTextBuf = C2D_TextBufNew(128);
-	C2D_TextParse(&txt, staticTextBuf, std::to_string(model->triCount).c_str());
-	C2D_TextOptimize(&txt);
+    // staticTextBuf = C2D_TextBufNew(128);
+	// C2D_TextParse(&txt, staticTextBuf, std::to_string(model->triCount).c_str());
+	// C2D_TextOptimize(&txt);
 }
 bool SceneEditor::userInput(){
     bool exit;
@@ -95,7 +95,8 @@ void SceneEditor::handleTouch(){
                         depth = v.depth;
                     }
                 }
-                selectedVertButton->isSelected = true;
+                if(selectedVertButton != nullptr)
+                    selectedVertButton->isSelected = true;
             }
         }
         else if (selectedVertButton && dragged) { //Move vertex with stylus
@@ -116,19 +117,18 @@ void SceneEditor::handleTouch(){
     }
 
     //debug info
-    staticTextBuf = C2D_TextBufNew(128);
-    //C2D_TextParse(&txt, staticTextBuf, (std::to_string(angleX) + " " + std::to_string(angleY)).c_str());
-    float biggest = 0, smallest = 10;
-    for(Vertex& v : model->vertices){
-        if(biggest < v.pos[0]){
-            biggest = v.pos[0];
-        }
-        if(smallest > v.pos[0]){
-            smallest = v.pos[0];
-        }
-    }
-    C2D_TextParse(&txt, staticTextBuf, (std::to_string(biggest) + " " + std::to_string(smallest)).c_str());
-	C2D_TextOptimize(&txt);
+    // staticTextBuf = C2D_TextBufNew(128);
+    // float biggest = 0, smallest = 10;
+    // for(Vertex& v : model->vertices){
+    //     if(biggest < v.pos[0]){
+    //         biggest = v.pos[0];
+    //     }
+    //     if(smallest > v.pos[0]){
+    //         smallest = v.pos[0];
+    //     }
+    // }
+    // C2D_TextParse(&txt, staticTextBuf, (std::to_string(biggest) + " " + std::to_string(smallest)).c_str());
+	// C2D_TextOptimize(&txt);
 }
 bool SceneEditor::handleKeys(){
     hidScanInput();
@@ -149,7 +149,7 @@ void SceneEditor::renderTop3D(float iod){
     drawVBO(iod,modelSprite.image.tex);
 }
 void SceneEditor::renderTop2D(float iod){
-    C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 0.5f, 0.5f);
+    //C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 0.5f, 0.5f);
 }
 void SceneEditor::renderBottom3D(){
 
