@@ -1,6 +1,5 @@
 #include "3dMath.hpp"
 
-float yaw = 0, pitch = 0;
 C3D_Mtx cameraRotation;
 
 template<typename T>

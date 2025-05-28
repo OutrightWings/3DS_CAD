@@ -4,8 +4,6 @@
 #include <algorithm>
 #include "modelObject.hpp"
 
-extern float yaw;
-extern float pitch;
 extern C3D_Mtx cameraRotation;
 
 
