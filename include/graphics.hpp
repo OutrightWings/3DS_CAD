@@ -4,7 +4,7 @@
 #include <3ds.h>
 #include "vshader_shbin.h"
 #include "constants.hpp"
-#include "scenes.hpp"
+#include "scene.hpp"
 #include "modelObject.hpp"
 #include "3dMath.hpp"
 

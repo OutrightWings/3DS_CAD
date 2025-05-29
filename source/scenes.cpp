@@ -1,4 +1,4 @@
-#include "scenes.hpp"
+#include "scene.hpp"
 
 Scene* current_scene;
 

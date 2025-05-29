@@ -1,6 +1,6 @@
 #pragma once
 #include "modelObject.hpp"
-#include "scenes.hpp"
+#include "scene.hpp"
 #include "spriteSheet.hpp"
 #include "3dMath.hpp"
 #include "graphics.hpp"

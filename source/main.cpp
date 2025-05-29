@@ -1,10 +1,10 @@
 #include "libraryInterface.hpp"
-#include "scenes.hpp"
+#include "sceneStartMenu.hpp"
 
 int main(int argc, char* argv[]) {
 	initLib();
 	
-	changeScene(new StartMenu());
+	changeScene(new SceneStartMenu());
 
 	while (aptMainLoop())
 	{
