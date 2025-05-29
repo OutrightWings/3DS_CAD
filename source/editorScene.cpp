@@ -17,13 +17,20 @@ VertexButton* selectedVertButton = nullptr;
 const float VERTEX_RADIUS = 6.0f;
 
 void SceneEditor::init(){
-    C2D_SpriteFromSheet(&topBarSprite, getSpriteSheet(), 0);
-    C2D_SpriteSetCenter(&topBarSprite, 0, 0);
-    C2D_SpriteSetPos(&topBarSprite, 0, 0);
+    C2D_SpriteFromSheet(&editorBarSprite, getSpriteSheet(), 0);
+    C2D_SpriteSetCenter(&editorBarSprite, 0, 0);
+    C2D_SpriteSetPos(&editorBarSprite, 276, 0);
+    //C2D_SpriteSetDepth(&editorBarSprite,100);
 
     C2D_SpriteFromSheet(&selectedViewSprite, getSpriteSheet(), 1);
     C2D_SpriteSetCenter(&selectedViewSprite, 0, 0);
     C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
+    //C2D_SpriteSetDepth(&selectedViewSprite,101);
+
+    C2D_SpriteFromSheet(&vertexAreaSprite, getSpriteSheet(), 5);
+    C2D_SpriteSetCenter(&vertexAreaSprite, 0, 0);
+    C2D_SpriteSetPos(&vertexAreaSprite, PRO_C1_X, PRO_C1_Y);
+    C2D_SpriteSetDepth(&vertexAreaSprite,-1);
 
     state = VIEW_TOP;
 
@@ -49,7 +56,7 @@ void SceneEditor::handleTouch(){
 
     if (!(touch.px == 0 && touch.py == 0)) { // screen is touched
         if (!dragged) {
-            if(touch.py <= TOP_BAR_BUTTON_HEIGHT){
+            if(touch.px >= EDITOR_BAR_X){
                 //Check Buttons for click
                 if(loadButton.isClicked(touch.px,touch.py)){
                     //TODO
@@ -65,17 +72,32 @@ void SceneEditor::handleTouch(){
                 }
                 else if(topButton.isClicked(touch.px,touch.py)){
                     C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
-                    state = state == VIEW_TOP ? VIEW_OPP_TOP : VIEW_TOP;
+                    state = VIEW_TOP;
                     presetRotate(state);
                 }
                 else if(leftButton.isClicked(touch.px,touch.py)){
                     C2D_SpriteSetPos(&selectedViewSprite, leftButton.x, leftButton.y);
-                    state = state == VIEW_LEFT ? VIEW_OPP_LEFT : VIEW_LEFT;
+                    state = VIEW_LEFT;
                     presetRotate(state);
                 }
                 else if(rightButton.isClicked(touch.px,touch.py)){
                     C2D_SpriteSetPos(&selectedViewSprite, rightButton.x, rightButton.y);
-                    state = state == VIEW_RIGHT ? VIEW_OPP_RIGHT : VIEW_RIGHT;
+                    state = VIEW_RIGHT;
+                    presetRotate(state);
+                }
+                else if(rightOpButton.isClicked(touch.px,touch.py)){
+                    C2D_SpriteSetPos(&selectedViewSprite, rightOpButton.x, rightOpButton.y);
+                    state = VIEW_OPP_RIGHT;
+                    presetRotate(state);
+                }
+                else if(leftOpButton.isClicked(touch.px,touch.py)){
+                    C2D_SpriteSetPos(&selectedViewSprite, leftOpButton.x, leftOpButton.y);
+                    state = VIEW_OPP_LEFT;
+                    presetRotate(state);
+                }
+                else if(topOpButton.isClicked(touch.px,touch.py)){
+                    C2D_SpriteSetPos(&selectedViewSprite, topOpButton.x, topOpButton.y);
+                    state = VIEW_OPP_TOP;
                     presetRotate(state);
                 }
             } else {
@@ -155,6 +177,8 @@ void SceneEditor::renderBottom3D(){
 
 }
 void SceneEditor::renderBottom2D() {
+    C2D_DrawSprite(&vertexAreaSprite);
+    
     // Draw lines for all face edges
     for (std::vector<FaceVertex> face : model->faces) {
         for (size_t i = 0; i < face.size(); ++i) {
@@ -165,7 +189,7 @@ void SceneEditor::renderBottom2D() {
             float d1 = depthValue(state, v1);
             float d2 = depthValue(state, v2);
             C2D_DrawLine(pair1.first, pair1.second, depthColor(d1),
-                         pair2.first, pair2.second, depthColor(d2), 1.5f, (d1 + d2) /2.0f);
+                         pair2.first, pair2.second, depthColor(d2), 3, (d1 + d2) /2.0f);
         }
     }
 
@@ -174,6 +198,6 @@ void SceneEditor::renderBottom2D() {
         vertexButtons[i].drawButton();
     }
 
-    C2D_DrawSprite(&topBarSprite);
+    C2D_DrawSprite(&editorBarSprite);
     C2D_DrawSprite(&selectedViewSprite);
 }

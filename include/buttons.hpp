@@ -78,3 +78,6 @@ extern Button newButton;
 extern Button topButton;
 extern Button leftButton;
 extern Button rightButton;
+extern Button topOpButton;
+extern Button leftOpButton;
+extern Button rightOpButton;

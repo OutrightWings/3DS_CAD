@@ -24,7 +24,7 @@ class SceneEditor :public Scene {
         void renderTop2D(float iod);
         void renderBottom2D();
     private:
-        C2D_Sprite topBarSprite, selectedViewSprite;
+        C2D_Sprite editorBarSprite, selectedViewSprite, vertexAreaSprite;
         void handleTouch();
         bool handleKeys();
 };

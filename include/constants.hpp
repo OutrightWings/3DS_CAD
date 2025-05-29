@@ -16,10 +16,12 @@
 #define MAX_VERTEX 100
 
 
-#define TOP_BAR_BUTTON_WIDTH 27
-#define TOP_BAR_BUTTON_HEIGHT 32
+#define EDITOR_BAR_X 276
+#define EDITOR_BAR_Y 0
+#define EDITOR_BAR_W 44
+#define EDITOR_BAR_H 240
 
-#define PRO_C1_X 0
-#define PRO_C1_Y 32
-#define PRO_C2_X 320
-#define PRO_C2_Y 240
+#define PRO_C1_X 21
+#define PRO_C1_Y 2
+#define PRO_C2_X 256
+#define PRO_C2_Y 237

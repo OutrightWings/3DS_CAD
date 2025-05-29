@@ -1,4 +1,5 @@
 # Todo:
+* c stick rotation does in place rotation instead of whole model around, just the face
 * Use earclipping to generate tris instead of fan so concave shapes
 * multi select verts
 * add vertex, delete vertex button
@@ -14,3 +15,7 @@
 * export model
 * camera mode? load multi models and scale them? -- how would textures work?
 * vert handles depth draw with edges to look cleaner
+
+# Knowledge
+* 3dslink -a 192.168.0.102 cad.3dsx
+* /opt/devkitpro/devkitARM/bin/arm-none-eabi-addr2line -f -e cad.elf PC
