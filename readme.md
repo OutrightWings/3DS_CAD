@@ -9,7 +9,6 @@
 * sprite editor
 * polish software theming
 * help button
-* double tap view button to get other side. top -> bottom etc
 # Maybe:
 * Rotate View buttons cause smooth rotation transition, pick good values
 * export model

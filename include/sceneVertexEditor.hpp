@@ -19,17 +19,13 @@ class SceneVertexEditor :public Scene {
             C2D_SpriteSetPos(&editorBarSprite, 276, 0);
             //C2D_SpriteSetDepth(&editorBarSprite,100);
 
-            C2D_SpriteFromSheet(&selectedViewSprite, getSpriteSheet(), 1);
-            C2D_SpriteSetCenter(&selectedViewSprite, 0, 0);
-            C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
-            //C2D_SpriteSetDepth(&selectedViewSprite,101);
-
             C2D_SpriteFromSheet(&vertexAreaSprite, getSpriteSheet(), 5);
             C2D_SpriteSetCenter(&vertexAreaSprite, 0, 0);
             C2D_SpriteSetPos(&vertexAreaSprite, PRO_C1_X, PRO_C1_Y);
             C2D_SpriteSetDepth(&vertexAreaSprite,-1);
 
             state = VIEW_TOP;
+            vertex_editor_buttons[BUTTON_TOP]->isSelected = true;
 
             //Create vertex buttons
             for(size_t i = 0; i < model->vertices.size(); i++){
@@ -52,7 +48,9 @@ class SceneVertexEditor :public Scene {
             drawVBO(iod,modelSprite.image.tex);
         }
         void renderBottom3D(){}
-        void renderTop2D(float iod){}
+        void renderTop2D(float iod){
+            //C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 0.5f, 0.5f);
+        }
         void renderBottom2D() {
             C2D_DrawSprite(&vertexAreaSprite);
             
@@ -70,17 +68,19 @@ class SceneVertexEditor :public Scene {
                 }
             }
 
-            // Draw vertex handles
+            // Draw vertex handles class VertexButton
             for(size_t i = 0; i < vertexButtons.size(); i++){
                 vertexButtons[i].drawButton();
             }
 
             C2D_DrawSprite(&editorBarSprite);
-            C2D_DrawSprite(&selectedViewSprite);
+            for (Button* b : vertex_editor_buttons) {
+                b->drawButton();
+            }
         }
     private:
-        //C2D_TextBuf staticTextBuf;
-        //C2D_Text txt;
+        // C2D_TextBuf staticTextBuf;
+        // C2D_Text txt;
 
         std::vector<VertexButton> vertexButtons;
         VertexButton* selectedVertButton = nullptr;
@@ -88,7 +88,7 @@ class SceneVertexEditor :public Scene {
         float VERTEX_RADIUS = 6.0f;
 
         bool dragged = false;
-        C2D_Sprite editorBarSprite, selectedViewSprite, vertexAreaSprite;
+        C2D_Sprite editorBarSprite, vertexAreaSprite;
 
         void handleTouch(){
             touchPosition touch;
@@ -97,52 +97,52 @@ class SceneVertexEditor :public Scene {
             if (!(touch.px == 0 && touch.py == 0)) { // screen is touched
                 if (!dragged) {
                     if(touch.px >= EDITOR_BAR_X){
-                        //Check Buttons for click
-                        if(loadButton.isClicked(touch.px,touch.py)){
-                            //TODO
-                        } 
-                        else if(saveButton.isClicked(touch.px,touch.py)){
-                            //TODO
+                        //Check View Buttons for click
+                        for (int i = BUTTON_TOP; i < VERTEX_BUTTON_COUNT; ++i) {
+                            if (vertex_editor_buttons[i]->isClicked(touch.px, touch.py)) {
+                                vertex_editor_buttons[i]->isSelected = true;
+
+                                switch (i) {
+                                    case BUTTON_TOP:
+                                        state = VIEW_TOP;
+                                        presetRotate(state);
+                                        break;
+                                    case BUTTON_LEFT:
+                                        state = VIEW_LEFT;
+                                        presetRotate(state);
+                                        break;
+                                    case BUTTON_RIGHT:
+                                        state = VIEW_RIGHT;
+                                        presetRotate(state);
+                                        break;
+                                    case BUTTON_OPP_TOP:
+                                        state = VIEW_OPP_TOP;
+                                        presetRotate(state);
+                                        break;
+                                    case BUTTON_OPP_LEFT:
+                                        state = VIEW_OPP_LEFT;
+                                        presetRotate(state);
+                                        break;
+                                    case BUTTON_OPP_RIGHT:
+                                        state = VIEW_OPP_RIGHT;
+                                        presetRotate(state);
+                                        break;
+                                }
+
+                                // Deselect others:
+                                for (int j = BUTTON_TOP; j < VERTEX_BUTTON_COUNT; ++j)
+                                    if (j != i) vertex_editor_buttons[j]->isSelected = false;
+                                
+                                break;
+                            }
                         }
-                        else if(deleteButton.isClicked(touch.px,touch.py)){
-                            //TODO
-                        }
-                        else if(newButton.isClicked(touch.px,touch.py)){
-                            //TODO
-                        }
-                        else if(topButton.isClicked(touch.px,touch.py)){
-                            C2D_SpriteSetPos(&selectedViewSprite, topButton.x, topButton.y);
-                            state = VIEW_TOP;
-                            presetRotate(state);
-                        }
-                        else if(leftButton.isClicked(touch.px,touch.py)){
-                            C2D_SpriteSetPos(&selectedViewSprite, leftButton.x, leftButton.y);
-                            state = VIEW_LEFT;
-                            presetRotate(state);
-                        }
-                        else if(rightButton.isClicked(touch.px,touch.py)){
-                            C2D_SpriteSetPos(&selectedViewSprite, rightButton.x, rightButton.y);
-                            state = VIEW_RIGHT;
-                            presetRotate(state);
-                        }
-                        else if(rightOpButton.isClicked(touch.px,touch.py)){
-                            C2D_SpriteSetPos(&selectedViewSprite, rightOpButton.x, rightOpButton.y);
-                            state = VIEW_OPP_RIGHT;
-                            presetRotate(state);
-                        }
-                        else if(leftOpButton.isClicked(touch.px,touch.py)){
-                            C2D_SpriteSetPos(&selectedViewSprite, leftOpButton.x, leftOpButton.y);
-                            state = VIEW_OPP_LEFT;
-                            presetRotate(state);
-                        }
-                        else if(topOpButton.isClicked(touch.px,touch.py)){
-                            C2D_SpriteSetPos(&selectedViewSprite, topOpButton.x, topOpButton.y);
-                            state = VIEW_OPP_TOP;
-                            presetRotate(state);
-                        }
+
                     } else {
                         // We are just starting to drag: find the vertex under the touch point
-                        selectedVertButton = nullptr;
+                        if(selectedVertButton != nullptr){
+                            selectedVertButton->isSelected = false;
+                            selectedVertButton = nullptr;
+                        }
                         float bestDistSq = VERTEX_RADIUS * VERTEX_RADIUS;
                         float depth = -1;
                         for (VertexButton& v : vertexButtons) {

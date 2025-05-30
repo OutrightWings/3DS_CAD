@@ -1,5 +1,5 @@
 #include "libraryInterface.hpp"
-
+#include "buttons.hpp"
 void initLib(){
 	//Base library
 	romfsInit();
@@ -16,6 +16,9 @@ void initLib(){
 	
 	initModel();
 	initShader();
+
+	initScenes();
+	initButtons();
 }
 void deinitLib(){
 	freeSpriteSheets();

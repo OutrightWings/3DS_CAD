@@ -12,4 +12,7 @@ class Scene {
 };
 
 extern Scene* current_scene;
+extern Scene *scene_vertex_editor, *scene_pause_menu, *scene_start_menu;
+
 void changeScene(Scene* scene);
+void initScenes();

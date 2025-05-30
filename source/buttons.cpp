@@ -1,13 +1,29 @@
 #include "buttons.hpp"
-Button loadButton = Button(0,0,0,0);
-Button saveButton = Button(0,0,0,0);
+std::vector<Button *> vertex_editor_buttons;
+std::vector<Button *> pause_menu_buttons;
+std::vector<Button *> vertex_options_buttons;
 
-Button deleteButton = Button(279,196,38,26);
-Button newButton = Button(279,169,38,26);
-
-Button topButton = Button(279,57,38,26);
-Button leftButton = Button(279,30,38,26);
-Button rightButton = Button(279,3,38,26);
-Button topOpButton = Button(279,84,38,26);
-Button leftOpButton = Button(279,138,38,26);
-Button rightOpButton = Button(279,111,38,26);
+void initButtons(){
+    vertex_editor_buttons = {
+        new Button(279,196,38,26,-1,-1),
+        new Button(279,169,38,26,-1,-1),
+        new Button(279,57,38,26,-1,1),
+        new Button(279,30,38,26,-1,1),
+        new Button(279,3,38,26,-1,1),
+        new Button(279,84,38,26,-1,1),
+        new Button(279,138,38,26,-1,1),
+        new Button(279,111,38,26,-1,1)
+    };
+    pause_menu_buttons = {
+        new Button(45,37,75,38,-1,-1),
+        new Button(122,37,75,38,-1,-1),
+        new Button(199,37,75,38,-1,-1),  
+        new Button(45,85,75,38,-1,7),
+        new Button(122,85,75,38,-1,7),
+        new Button(199,85,75,38,-1,7)
+    };
+    vertex_options_buttons = {
+        new Button(45,133,18,18,9,10),
+        new Button(45,155,18,18,9,10)
+    };
+}

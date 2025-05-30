@@ -4,7 +4,7 @@
 #include "spriteSheet.hpp"
 #include "graphics.hpp"
 
-#include "sceneVertexEditor.hpp"
+#include "scene.hpp"
 
 class SceneStartMenu : public Scene {
     public:
@@ -19,7 +19,7 @@ class SceneStartMenu : public Scene {
             hidTouchRead(&touch);
             
             if (!(touch.px == 0 && touch.py == 0)) { // screen is touched
-                changeScene(new SceneVertexEditor());
+                changeScene(scene_pause_menu);
             }
             
             u32 kDown = hidKeysDown();
