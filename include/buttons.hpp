@@ -9,12 +9,15 @@ class Button{
 	public:
     C2D_Sprite unselected, selected;
     bool isSelected = false;
-
+    int idUn, idSel;
 	Button(int _x, int _y, int _w, int _h, int unselectedSpriteID, int selectedSpriteID){
 		x = _x;
 		y = _y;
 		w = _w;
 		h = _h;
+        
+        idUn = unselectedSpriteID;
+        idSel = selectedSpriteID;
 
         if(unselectedSpriteID != -1){
             C2D_SpriteFromSheet(&unselected, getSpriteSheet(), unselectedSpriteID);
@@ -35,9 +38,9 @@ class Button{
 		return px >= x && px <= x+w && py >= y && py <= y+h;
 	}
     virtual void drawButton(){
-        if(isSelected){
+        if(isSelected && idSel != -1){
             C2D_DrawSprite(&selected);
-        } else {
+        } else if(!isSelected && idUn != -1){
             C2D_DrawSprite(&unselected);
         }
     }
