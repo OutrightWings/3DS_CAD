@@ -3,6 +3,7 @@
 class ScenePauseMenu : public Scene {
     public:
         void init(){
+            Scene::init();
             C2D_SpriteFromSheet(&pauseMenuSprite, getSpriteSheet(), 6);
             C2D_SpriteSetCenter(&pauseMenuSprite, 0, 0);
             C2D_SpriteSetPos(&pauseMenuSprite, 39, 32);
@@ -55,6 +56,7 @@ class ScenePauseMenu : public Scene {
         void renderBottom3D(){}
         void renderTop2D(float iod){}
         void renderBottom2D(){
+            Scene::renderBottom2D();
             //pause
             C2D_DrawSprite(&pauseMenuSprite);
             for(Button* b: pause_menu_buttons){

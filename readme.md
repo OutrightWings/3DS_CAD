@@ -1,4 +1,5 @@
 # Todo:
+* Touching the screen that causes a scene change doesnt continue to register the touch when the scene changes
 * c stick rotation does in place rotation instead of whole model around, just the face
 * Use earclipping to generate tris instead of fan so concave shapes
 * multi select verts
@@ -7,7 +8,6 @@
 * home menu, shows last model on home menu? home menu -> editor always starts new file -> load
 * UV mapping editor
 * sprite editor
-* polish software theming
 * help button
 # Maybe:
 * Rotate View buttons cause smooth rotation transition, pick good values
@@ -17,4 +17,4 @@
 
 # Knowledge
 * 3dslink -a 192.168.0.102 cad.3dsx
-* /opt/devkitpro/devkitARM/bin/arm-none-eabi-addr2line -f -e cad.elf PC
+* /opt/devkitpro/devkitARM/bin/arm-none-eabi-addr2line -aipfCe arm -e cad.elf PC

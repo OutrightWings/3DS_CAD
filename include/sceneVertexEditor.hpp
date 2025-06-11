@@ -14,6 +14,7 @@
 class SceneVertexEditor :public Scene {
     public:
         void init(){
+            Scene::init();
             C2D_SpriteFromSheet(&editorBarSprite, getSpriteSheet(), 0);
             C2D_SpriteSetCenter(&editorBarSprite, 0, 0);
             C2D_SpriteSetPos(&editorBarSprite, 276, 0);
@@ -52,6 +53,7 @@ class SceneVertexEditor :public Scene {
             //C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 0.5f, 0.5f);
         }
         void renderBottom2D() {
+            Scene::renderBottom2D();
             C2D_DrawSprite(&vertexAreaSprite);
             
             // Draw lines for all face edges
