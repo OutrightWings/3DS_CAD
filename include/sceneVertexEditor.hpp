@@ -204,14 +204,29 @@ class SceneVertexEditor :public Scene {
         }
         bool handleKeys(){
             hidScanInput();
+
             u32 kDown = hidKeysDown();
             if (kDown & KEY_START)
                 return true; // break in order to return to hbmenu
 
             u32 key = hidKeysHeld();
-            if ((key & KEY_DRIGHT) || (key & KEY_DLEFT) || (key & KEY_DUP) || (key & KEY_DDOWN))
-                rotate(key);
+            handleCirclePad(key);    
 
             return false;
+        }
+        void handleCirclePad(u32 key){
+            circlePosition pos;
+            hidCircleRead(&pos);
+            
+            //Calculate how far we are to the edge of the cicle pad max edge 1 is max 0 is center
+            float x2 = pos.dx * pos.dx;
+            float y2 = pos.dy * pos.dy;
+
+            float sum = x2 + y2;
+
+            float ratio = sum/CIRCLE_PAD_MAX;
+            ratio = ratio > 1 ? 1 : ratio; // Make sure to cap it at one 
+            
+            rotate(key,ratio);
         }
 };

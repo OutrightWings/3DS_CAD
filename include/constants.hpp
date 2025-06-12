@@ -18,6 +18,7 @@
 
 #define MAX_VERTEX 100
 
+#define CIRCLE_PAD_MAX 22500
 
 #define EDITOR_BAR_X 276
 #define EDITOR_BAR_Y 0

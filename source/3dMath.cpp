@@ -147,28 +147,28 @@ u32 depthColor(float depth){
     }
     return C2D_Color32(out[0],out[1],out[2],out[3]);
 }
-void rotate(u32 kHeld){
-    const float sensitivity = C3D_AngleFromDegrees(1.0f); // 1 degree per frame
+void rotate(u32 kHeld, float ratio){
+    const float sensitivity = C3D_AngleFromDegrees(ratio);
 
     C3D_Mtx rotation;
     Mtx_Identity(&rotation);
 
     // Pitch (local X axis)
-    if (kHeld & KEY_DDOWN) {
+    if (kHeld & KEY_CPAD_DOWN) {
         Mtx_RotateX(&rotation, -sensitivity, true);
         Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
     }
-    if (kHeld & KEY_DUP) {
+    if (kHeld & KEY_CPAD_UP) {
         Mtx_RotateX(&rotation, sensitivity, true);
         Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
     }
 
     // Yaw (local Y axis)
-    if (kHeld & KEY_DLEFT) {
+    if (kHeld & KEY_CPAD_LEFT) {
         Mtx_RotateY(&rotation, sensitivity, true);
         Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
     }
-    if (kHeld & KEY_DRIGHT) {
+    if (kHeld & KEY_CPAD_RIGHT) {
         Mtx_RotateY(&rotation, -sensitivity, true);
         Mtx_Multiply(&cameraRotation, &cameraRotation, &rotation);
     }

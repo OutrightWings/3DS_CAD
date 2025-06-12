@@ -1,5 +1,4 @@
 # Right Now
-* change camera rotation to use the circle pad
 * multi select verts
 * add vertex, delete vertex button
 

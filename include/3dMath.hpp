@@ -14,5 +14,5 @@ std::array<float, 3> screenToModelSpace(float screenX, float screenY, ViewState 
 std::pair<float, float> modelToScreenSpace(ViewState s, Vertex* v);
 float depthValue(ViewState s, Vertex* v);
 u32 depthColor(float p);
-void rotate(u32 direction);
+void rotate(u32 direction, float ratio);
 void presetRotate(ViewState view);
