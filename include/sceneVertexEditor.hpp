@@ -85,7 +85,7 @@ class SceneVertexEditor :public Scene {
         // C2D_Text txt;
 
         std::vector<VertexButton> vertexButtons;
-        VertexButton* selectedVertButton = nullptr;
+        std::vector<VertexButton*> selectedVertButtons;
         
         float VERTEX_RADIUS = 6.0f;
 
@@ -141,12 +141,15 @@ class SceneVertexEditor :public Scene {
 
                     } else {
                         // We are just starting to drag: find the vertex under the touch point
-                        if(selectedVertButton != nullptr){
-                            selectedVertButton->isSelected = false;
-                            selectedVertButton = nullptr;
+                        if(!selectedVertButtons.empty()){
+                            for(VertexButton *b : selectedVertButtons){
+                                b->isSelected = false;
+                            }
+                            selectedVertButtons.clear();
                         }
                         float bestDistSq = VERTEX_RADIUS * VERTEX_RADIUS;
                         float depth = -1;
+                        VertexButton* temp = nullptr;
                         for (VertexButton& v : vertexButtons) {
                             std::pair<float, float> pos = v.getPos();
                             float dx = pos.first - touch.px;
@@ -155,28 +158,33 @@ class SceneVertexEditor :public Scene {
 
                             if (distSq <= bestDistSq && v.depth >= depth) {
                                 bestDistSq = distSq;
-                                selectedVertButton = &v;
+                                temp = &v;
                                 depth = v.depth;
                             }
                         }
-                        if(selectedVertButton != nullptr)
-                            selectedVertButton->isSelected = true;
+                        if(temp != nullptr){
+                            temp->isSelected = true;
+                            selectedVertButtons.push_back(temp);
+                        }
                     }
                 }
-                else if (selectedVertButton && dragged) { //Move vertex with stylus
+                else if (!selectedVertButtons.empty() && dragged) { //Move vertex with stylus
                     //Update vertex
-                    selectedVertButton->updatePos(touch.px, touch.py);
-                    model->updateVertex(selectedVertButton->v);
+                    for(VertexButton *b : selectedVertButtons){
+                        b->updatePos(touch.px, touch.py);
+                        model->updateVertex(b->v);
+                    }
+                    
                 }
                 dragged = true;
 
             } else if (dragged) { // touch was just released
                 dragged = false;
-                if (selectedVertButton) {
-                    model->generateTris();
-                    updateVBO(model->triArray, model->triCount);
-                    selectedVertButton->isSelected = false;
-                    selectedVertButton = nullptr;
+                if(!selectedVertButtons.empty()){
+                    for(VertexButton *b : selectedVertButtons){
+                        b->isSelected = false;
+                    }
+                    selectedVertButtons.clear();
                 }
             }
 

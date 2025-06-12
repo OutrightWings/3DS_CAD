@@ -1,14 +1,18 @@
+# Right Now
+* change camera rotation to use the circle pad
+* multi select verts
+* add vertex, delete vertex button
+
 # Todo:
 * Touching the screen that causes a scene change doesnt continue to register the touch when the scene changes
 * c stick rotation does in place rotation instead of whole model around, just the face
 * Use earclipping to generate tris instead of fan so concave shapes
-* multi select verts
-* add vertex, delete vertex button
 * save data
 * home menu, shows last model on home menu? home menu -> editor always starts new file -> load
 * UV mapping editor
 * sprite editor
 * help button
+
 # Maybe:
 * Rotate View buttons cause smooth rotation transition, pick good values
 * export model
