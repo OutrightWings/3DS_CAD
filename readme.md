@@ -1,5 +1,6 @@
 # Right Now
 * multi select verts
+* verts use offset to move not static pos
 * add vertex, delete vertex button
 
 # Todo:

@@ -45,6 +45,17 @@ class Button{
         }
     }
 };
+class ViewButton : public Button {
+    public:
+        ViewButton(int _x, int _y, int _w, int _h, int unselectedSpriteID, int selectedSpriteID, ViewState _s) : Button(_x,_y,_w,_h,unselectedSpriteID,selectedSpriteID){
+            state = _s;
+        }
+        void click(){
+            presetRotate(state);
+        }
+    private:
+        ViewState state;
+};
 class VertexButton : public Button {
     public:
     VertexButton(Vertex* _v) : Button(0,0,6,6, 2, 3){
