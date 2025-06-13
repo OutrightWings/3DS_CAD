@@ -123,11 +123,11 @@ class SceneVertexEditor :public Scene {
                     }
                 }
                 else{
-                    dragging = true;
                     //Did we just click a button
                     if(touchPos.px >= EDITOR_BAR_X)
                         handleButtons();
                     else {
+                        dragging = true;
                         //Start dragging area
                         startX = touchPos.px;
                         startY = touchPos.py;
@@ -138,16 +138,17 @@ class SceneVertexEditor :public Scene {
                             //Under is empty
                             if(under.empty()){
                                 //deselect everything prior
-                                selectSelected(false);
+                                clickAllButtons(selectedVertButtons);
                                 selectedVertButtons.clear();
                             }
                             //Under is not in our list of selected nodes so replace it
                             else if(!under.at(0)->isSelected){
                                 //deselect everything prior
-                                selectSelected(false);
+                                clickAllButtons(selectedVertButtons);
+                                selectedVertButtons.clear();
                                 //Update with new
                                 selectedVertButtons = under;
-                                selectSelected(true);
+                                clickAllButtons(selectedVertButtons);
                             }
                         }
                         
@@ -163,12 +164,9 @@ class SceneVertexEditor :public Scene {
                     std::vector<VertexButton*> under = getNearestVertexHandles(true);
                     
                     //toggle state of buttons that are under.
-                    for(size_t i = 0; i < under.size(); i++){
-                        VertexButton *b = under[i];
-                        b->isSelected = !b->isSelected;
-                    }
+                    clickAllButtons(under);
                     //merge lists
-                    if(selectedVertButtons.at(0)){
+                    if(!selectedVertButtons.empty()){
                         // for(VertexButton *b : under){
                         //     auto pos = std::find(selectedVertButtons.begin(),selectedVertButtons.end(),b);
                         //     //not in the list add
@@ -197,9 +195,9 @@ class SceneVertexEditor :public Scene {
                 updateDragArea(touchPos);
             }
         }
-        void selectSelected(bool on){
-            for(VertexButton* b : selectedVertButtons){
-                b->isSelected = on;
+        void clickAllButtons(std::vector<VertexButton*> buttons){
+            for(VertexButton* b : buttons){
+                b->click();
             }
         }
 
@@ -298,7 +296,7 @@ class SceneVertexEditor :public Scene {
                 }
             }
 
-            if(!multi)
+            if(!multi && temp)
                 list.push_back(temp);
             return list;
         }

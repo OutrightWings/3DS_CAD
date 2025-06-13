@@ -44,17 +44,19 @@ class Button{
             C2D_DrawSprite(&unselected);
         }
     }
+    virtual void click(){}
 };
 class ViewButton : public Button {
     public:
         ViewButton(int _x, int _y, int _w, int _h, int unselectedSpriteID, int selectedSpriteID, ViewState _s) : Button(_x,_y,_w,_h,unselectedSpriteID,selectedSpriteID){
-            state = _s;
+            setState = _s;
         }
-        void click(){
-            presetRotate(state);
+        void click() override{
+            state = setState;
+            presetRotate(setState);
         }
     private:
-        ViewState state;
+        ViewState setState;
 };
 class VertexButton : public Button {
     public:
@@ -100,6 +102,9 @@ class VertexButton : public Button {
     void drawButton() override{
         updateSpritePos();
         Button::drawButton();
+    }
+    void click() override{
+        isSelected = !isSelected;
     }
     Vertex* v;
     float depth;
