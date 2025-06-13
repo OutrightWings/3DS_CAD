@@ -50,7 +50,7 @@ class SceneVertexEditor :public Scene {
         }
         void renderBottom3D(){}
         void renderTop2D(float iod){
-            C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 0.5f, 0.5f);
+            //C2D_DrawText(&txt, 0, 8.0f, 8.0f, 1.0f, 0.5f, 0.5f);
         }
         void renderBottom2D() {
             Scene::renderBottom2D();
@@ -80,12 +80,12 @@ class SceneVertexEditor :public Scene {
                 b->drawButton();
             }
 
-            C2D_DrawLine(xMin,yMin,CLOSE_LINE_COLOR,xMax,yMax,CLOSE_LINE_COLOR,3,1);
+            C2D_DrawLine(xMin,yMin,CLOSE_LINE_COLOR,xMax,yMin,CLOSE_LINE_COLOR,3,1);
+            C2D_DrawLine(xMin,yMin,CLOSE_LINE_COLOR,xMin,yMax,CLOSE_LINE_COLOR,3,1);
+            C2D_DrawLine(xMax,yMax,CLOSE_LINE_COLOR,xMax,yMin,CLOSE_LINE_COLOR,3,1);
+            C2D_DrawLine(xMax,yMax,CLOSE_LINE_COLOR,xMin,yMax,CLOSE_LINE_COLOR,3,1);
         }
     private:
-        C2D_TextBuf staticTextBuf;
-        C2D_Text txt;
-
         std::vector<VertexButton> vertexButtons;
         std::vector<VertexButton*> selectedVertButtons;
         
@@ -96,7 +96,6 @@ class SceneVertexEditor :public Scene {
         int xMin, xMax, yMin, yMax;
 
         bool dragging = false;
-        bool overVertex = false;
         bool multi_select = false;
 
         C2D_Sprite editorBarSprite, vertexAreaSprite;
@@ -167,16 +166,18 @@ class SceneVertexEditor :public Scene {
                     clickAllButtons(under);
                     //merge lists
                     if(!selectedVertButtons.empty()){
-                        // for(VertexButton *b : under){
-                        //     auto pos = std::find(selectedVertButtons.begin(),selectedVertButtons.end(),b);
-                        //     //not in the list add
-                        //     if( pos != selectedVertButtons.end()){
-                        //         selectedVertButtons.push_back(b);
-                        //     }
-                        //     else { //in list remove
-                        //         selectedVertButtons.erase(pos);
-                        //     }
-                        // }
+                        if (!selectedVertButtons.empty()) {
+                            for (VertexButton* b : under) {
+                                auto it = std::find(selectedVertButtons.begin(), selectedVertButtons.end(), b);
+                                if (it == selectedVertButtons.end()) {
+                                    // Not in the list: add it
+                                    selectedVertButtons.push_back(b);
+                                } else {
+                                    // In the list: remove it
+                                    selectedVertButtons.erase(it);
+                                }
+                            }
+                        }
                     }
                     //make new list
                     else{
@@ -189,7 +190,6 @@ class SceneVertexEditor :public Scene {
                 }
                 //clean up
                 dragging = false;
-                overVertex = false;
                 startX = 0;
                 startY = 0;
                 updateDragArea(touchPos);
@@ -260,10 +260,6 @@ class SceneVertexEditor :public Scene {
         }
 
         std::vector<VertexButton*> getNearestVertexHandles(bool multi){
-            consoleClear();
-            printf("\x1b[1;1H%03d-%03d",xMin,xMax);
-            printf("\x1b[2;1H%03d-%03d\n",yMin,yMax);
-
             std::vector<VertexButton*> list;
             VertexButton* temp = nullptr;
             float bestDistSq = VERTEX_RADIUS * VERTEX_RADIUS;
@@ -290,7 +286,6 @@ class SceneVertexEditor :public Scene {
                         pos.second >= yMin  -VERTEX_RADIUS&&
                         pos.second <= yMax  +VERTEX_RADIUS
                         ){
-                        printf("%04f %04f\n",pos.first,pos.second);
                         list.push_back(&v);
                     }
                 }

@@ -181,10 +181,12 @@ void createScreens(){
 	topRight = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
 	bottom = C3D_RenderTargetCreate(240, 320, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
 
+	#ifdef DEBUG
 	consoleInit(GFX_TOP, NULL);
-
-	// C3D_RenderTargetSetOutput(topLeft,  GFX_TOP, GFX_LEFT,  DISPLAY_TRANSFER_FLAGS);
-	// C3D_RenderTargetSetOutput(topRight, GFX_TOP, GFX_RIGHT, DISPLAY_TRANSFER_FLAGS);
+	#else
+	C3D_RenderTargetSetOutput(topLeft,  GFX_TOP, GFX_LEFT,  DISPLAY_TRANSFER_FLAGS);
+	C3D_RenderTargetSetOutput(topRight, GFX_TOP, GFX_RIGHT, DISPLAY_TRANSFER_FLAGS);
+	#endif
 	C3D_RenderTargetSetOutput(bottom, GFX_BOTTOM, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
 
 }

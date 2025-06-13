@@ -1,5 +1,4 @@
 # Right Now
-* multi select verts
 * add vertex, delete vertex button
 
 # Todo:
