@@ -80,11 +80,6 @@ class SceneVertexEditor :public Scene {
                 b->drawButton();
             }
 
-            float xMin, xMax, yMin, yMax;
-            xMin = fmin(dragStartPos.px,touchPos.px);
-            yMin = fmin(dragStartPos.py,touchPos.py);
-            xMax = fmax(dragStartPos.px,touchPos.px);
-            yMax = fmax(dragStartPos.py,touchPos.py);
             C2D_DrawLine(xMin,yMin,CLOSE_LINE_COLOR,xMax,yMax,CLOSE_LINE_COLOR,3,1);
         }
     private:
@@ -96,79 +91,124 @@ class SceneVertexEditor :public Scene {
         
         float VERTEX_RADIUS = 6.0f;
 
-        touchPosition dragStartPos, touchPos;
+        touchPosition touchPos;
+        int startX, startY;
         int xMin, xMax, yMin, yMax;
 
         bool dragging = false;
+        bool overVertex = false;
         bool multi_select = false;
 
         C2D_Sprite editorBarSprite, vertexAreaSprite;
 
         void handleTouch(){
             hidTouchRead(&touchPos);
-            
-            if (!(touchPos.px == 0 && touchPos.py == 0)) { // screen is touched
-                if (!dragging) { //Not already dragging
-                    if(touchPos.px >= EDITOR_BAR_X){ //Clicked in the button area
-                        handleButtons();
-
-                    } else { // We are just starting to drag
-                        
-                        dragStartPos = touchPos;
-
-                        // if(!selectedVertButtons.empty()){
-                        //     for(VertexButton *b : selectedVertButtons){
-                        //         b->isSelected = false;
-                        //     }
-                        //     selectedVertButtons.clear();
-                        // }
-                        
-                        // std::vector<VertexButton*> temp = getNearestVertexHandle();
-
-                        // if(temp != nullptr){
-                        //     temp->isSelected = true;
-                        //     selectedVertButtons.push_back(temp);
-                        // }
+            //is screen touched
+            if(!(touchPos.px == 0 && touchPos.py == 0)){
+                if(dragging){
+                    //If we are on a point, we should be moving it and all selected by a delta
+                    if(!multi_select){
+                        //Get delta and set new start to here
+                        float dx = touchPos.px - startX;
+                        float dy = touchPos.py - startY;
+                        startX = touchPos.px;
+                        startY = touchPos.py;
+                        for(VertexButton *b : selectedVertButtons){
+                            b->updatePos(dx,dy);
+                        }
+                    }
+                    //If we are not on a point be saving corners for the drag area
+                    else if(multi_select){
+                        updateDragArea(touchPos);
                     }
                 }
-                else if (!selectedVertButtons.empty() && dragging) { //Move vertices with stylus
-                    //todo
-                    for(VertexButton *b : selectedVertButtons){
-                        b->updatePos(touchPos.px, touchPos.py);
-                        model->updateVertex(b->v);
+                else{
+                    dragging = true;
+                    //Did we just click a button
+                    if(touchPos.px >= EDITOR_BAR_X)
+                        handleButtons();
+                    else {
+                        //Start dragging area
+                        startX = touchPos.px;
+                        startY = touchPos.py;
+                        updateDragArea(touchPos);
+                        //did we click whitespace
+                        std::vector<VertexButton*> under = getNearestVertexHandles(false);
+                        if(!multi_select){
+                            //Under is empty
+                            if(under.empty()){
+                                //deselect everything prior
+                                selectSelected(false);
+                                selectedVertButtons.clear();
+                            }
+                            //Under is not in our list of selected nodes so replace it
+                            else if(!under.at(0)->isSelected){
+                                //deselect everything prior
+                                selectSelected(false);
+                                //Update with new
+                                selectedVertButtons = under;
+                                selectSelected(true);
+                            }
+                        }
+                        
+                    }
+                }
+            }
+            else if(dragging){
+                //update the vbo with the points we moved
+                model->generateTris();
+                updateVBO(model->triArray,model->triCount);
+                //if multi select nodes/release nodes
+                if(multi_select){
+                    std::vector<VertexButton*> under = getNearestVertexHandles(true);
+                    
+                    //toggle state of buttons that are under.
+                    for(size_t i = 0; i < under.size(); i++){
+                        VertexButton *b = under[i];
+                        b->isSelected = !b->isSelected;
+                    }
+                    //merge lists
+                    if(selectedVertButtons.at(0)){
+                        // for(VertexButton *b : under){
+                        //     auto pos = std::find(selectedVertButtons.begin(),selectedVertButtons.end(),b);
+                        //     //not in the list add
+                        //     if( pos != selectedVertButtons.end()){
+                        //         selectedVertButtons.push_back(b);
+                        //     }
+                        //     else { //in list remove
+                        //         selectedVertButtons.erase(pos);
+                        //     }
+                        // }
+                    }
+                    //make new list
+                    else{
+                        for(VertexButton *b : under){
+                            if(b->isSelected)
+                                selectedVertButtons.push_back(b);
+                        }
                     }
                     
                 }
-                dragging = true;
-
-            } else if (dragging) { // touch was just released
+                //clean up
                 dragging = false;
-                
-                //deselect everything prior
-                if(!selectedVertButtons.empty()){
-                    for(VertexButton *b : selectedVertButtons){
-                        b->isSelected = false;
-                    }
-                    selectedVertButtons.clear();
-                }
-                //Select new things
-                
-                xMin = fmin(dragStartPos.px,touchPos.px);
-                yMin = fmin(dragStartPos.py,touchPos.py);
-                xMax = fmax(dragStartPos.px,touchPos.px);
-                yMax = fmax(dragStartPos.py,touchPos.py);
-
-                selectedVertButtons = getNearestVertexHandles(multi_select, xMin,xMax,yMin,yMax);
-                for(VertexButton *b : selectedVertButtons){
-                    b->isSelected = true;
-                }
-                dragStartPos = {0,0};
+                overVertex = false;
+                startX = 0;
+                startY = 0;
+                updateDragArea(touchPos);
             }
+        }
+        void selectSelected(bool on){
+            for(VertexButton* b : selectedVertButtons){
+                b->isSelected = on;
+            }
+        }
 
-            //debug info
-            staticTextBuf = C2D_TextBufNew(128);
-            C2D_TextParse(&txt, staticTextBuf, (std::to_string(xMin) + ", " + std::to_string(yMin) +"  "+ std::to_string(xMax) + ", " + std::to_string(yMax)).c_str());
-            C2D_TextOptimize(&txt);
+        void updateDragArea(touchPosition end){
+            xMax = fmax(startX,end.px);
+            xMin = fmin(startX,end.px);
+
+            yMax = fmax(startY,end.py);
+            yMin = fmin(startY,end.py);
         }
         void handleButtons(){
             //Check View Buttons for click
@@ -185,6 +225,7 @@ class SceneVertexEditor :public Scene {
                     break;
                 }
             }
+            //todo check other buttons
         }
         bool handleKeys(){
             hidScanInput();
@@ -220,7 +261,11 @@ class SceneVertexEditor :public Scene {
             rotate(key,ratio);
         }
 
-        std::vector<VertexButton*> getNearestVertexHandles(bool multi, int xMin, int xMax, int yMin, int yMax){
+        std::vector<VertexButton*> getNearestVertexHandles(bool multi){
+            consoleClear();
+            printf("\x1b[1;1H%03d-%03d",xMin,xMax);
+            printf("\x1b[2;1H%03d-%03d\n",yMin,yMax);
+
             std::vector<VertexButton*> list;
             VertexButton* temp = nullptr;
             float bestDistSq = VERTEX_RADIUS * VERTEX_RADIUS;
@@ -242,11 +287,12 @@ class SceneVertexEditor :public Scene {
                 }
                 //Return everything between the two corners
                 else {
-                    if( pos.first >= xMin  && 
-                        pos.first <= xMax  &&
-                        pos.second >= yMin  &&
-                        pos.second <= yMax  
+                    if( pos.first >= xMin -VERTEX_RADIUS && 
+                        pos.first <= xMax  +VERTEX_RADIUS&&
+                        pos.second >= yMin  -VERTEX_RADIUS&&
+                        pos.second <= yMax  +VERTEX_RADIUS
                         ){
+                        printf("%04f %04f\n",pos.first,pos.second);
                         list.push_back(&v);
                     }
                 }

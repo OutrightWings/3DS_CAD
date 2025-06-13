@@ -66,12 +66,15 @@ class VertexButton : public Button {
 
         updateSpritePos();
     }
-    void updatePos(float screenX, float screenY){
-        std::array<float, 3> result = screenToModelSpace(screenX,screenY,state,v);
+    void updatePos(float dx, float dy){
+        std::pair<float, float> pos = getPos();
+
+        std::array<float, 3> result = screenToModelSpace(pos.first+dx,pos.second+dy,state,v);
         for(int i = 0; i < 3; i++){
             v->pos[i] = result[i];
         }
         updateSpritePos();
+        model->updateVertex(v);
     }
     std::pair<float, float> getPos(){
         return modelToScreenSpace(state,v);
